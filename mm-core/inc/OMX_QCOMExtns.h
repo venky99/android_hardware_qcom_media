@@ -169,6 +169,14 @@ typedef struct OMX_QCOM_PARAM_PORTDEFINITIONTYPE {
 
 } OMX_QCOM_PARAM_PORTDEFINITIONTYPE;
 
+typedef struct OMX_QCOM_VIDEO_PARAM_QPRANGETYPE {
+    OMX_U32 nSize;
+    OMX_VERSIONTYPE nVersion;
+    OMX_U32 nPortIndex;
+    OMX_U32 minQP;
+    OMX_U32 maxQP;
+} OMX_QCOM_VIDEO_PARAM_QPRANGETYPE;
+
 #define OMX_QCOM_PLATFORMPVT_EXTN   "OMX.QCOM.index.param.platformprivate"
 /** Allowed APIs on the above Index: OMX_SetParameter() */
 
@@ -200,6 +208,9 @@ typedef struct OMX_QCOM_PLATFORM_PRIVATE_PMEM_INFO
     OMX_U32 pmem_fd;
     /** Offset from pmem device base address */
     OMX_U32 offset;
+    OMX_U32 size;
+    OMX_U32 mapped_size;
+    OMX_PTR buffer;
 }OMX_QCOM_PLATFORM_PRIVATE_PMEM_INFO;
 
 typedef struct OMX_QCOM_PLATFORM_PRIVATE_ENTRY
@@ -364,6 +375,9 @@ enum OMX_QCOM_EXTN_INDEXTYPE
 
     /*"OMX.QCOM.index.param.video.EnableSmoothStreaming"*/
     OMX_QcomIndexParamEnableSmoothStreaming = 0x7F000022,
+
+    /*"OMX.QCOM.index.param.video.QPRange" */
+    OMX_QcomIndexParamVideoQPRange = 0x7F000023,
 };
 
 /**
