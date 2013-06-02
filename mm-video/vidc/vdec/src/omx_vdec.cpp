@@ -7070,12 +7070,14 @@ int omx_vdec::async_message_process (void *context, void* message)
         vdec_msg->msgdata.output_frame.flags &= ~OMX_BUFFERFLAG_SYNCFRAME;
     }
 
+#ifdef VDEC_IOCTL_GET_ENABLE_SEC_METADATA
     DEBUG_PRINT_LOW("[RespBufDone] Buf(%p), Data_len(%d), Ts(%lld), Pic_type(%u), "\
       "Flags(0x%x), MetadataInfo: len(%d), offset(%d)", omxhdr,
       vdec_msg->msgdata.output_frame.len, vdec_msg->msgdata.output_frame.time_stamp,
       vdec_msg->msgdata.output_frame.pic_type, vdec_msg->msgdata.output_frame.flags,
       vdec_msg->msgdata.output_frame.metadata_len,
       vdec_msg->msgdata.output_frame.metadata_offset);
+#endif
 
     if (omxhdr && omxhdr->pOutputPortPrivate &&
         ((omxhdr - omx->m_out_mem_ptr) < omx->drv_ctx.op_buf.actualcount) &&
@@ -7121,8 +7123,10 @@ int omx_vdec::async_message_process (void *context, void* message)
           vdec_msg->msgdata.output_frame.framesize.top;
         output_respbuf->len = vdec_msg->msgdata.output_frame.len;
         output_respbuf->offset = vdec_msg->msgdata.output_frame.offset;
+#ifdef VDEC_IOCTL_GET_ENABLE_SEC_METADATA
         output_respbuf->metadata_len = vdec_msg->msgdata.output_frame.metadata_len;
         output_respbuf->metadata_offset = vdec_msg->msgdata.output_frame.metadata_offset;
+#endif
         output_respbuf->time_stamp = vdec_msg->msgdata.output_frame.time_stamp;
         output_respbuf->flags = vdec_msg->msgdata.output_frame.flags;
         output_respbuf->pic_type = vdec_msg->msgdata.output_frame.pic_type;
@@ -7993,12 +7997,14 @@ OMX_ERRORTYPE omx_vdec::get_buffer_req(vdec_allocatorproperty *buffer_prop)
   }
   else
   {
+#ifdef VDEC_IOCTL_GET_ENABLE_SEC_METADATA
     DEBUG_PRINT_LOW("get_buffer_req: Port(%d), min(%d), max(%d), "
         "act(%d), size(%d), align(%d), meta_buf_size(%d)",
         buffer_prop->buffer_type, buffer_prop->mincount,
         buffer_prop->maxcount, buffer_prop->actualcount,
         buffer_prop->buffer_size, buffer_prop->alignment,
         buffer_prop->buf_poolid, buffer_prop->meta_buffer_size);
+#endif
     buf_size = buffer_prop->buffer_size;
 
     ioctl_msg.in = NULL;
@@ -8064,12 +8070,14 @@ OMX_ERRORTYPE omx_vdec::set_buffer_req(vdec_allocatorproperty *buffer_prop)
   }
   else
   {
+#ifdef VDEC_IOCTL_GET_ENABLE_SEC_METADATA
     DEBUG_PRINT_LOW("set_buffer_req: Port(%d), min(%d), max(%d), "
         "act(%d), size(%d), align(%d), meta_buf_size(%d)",
         buffer_prop->buffer_type, buffer_prop->mincount,
         buffer_prop->maxcount, buffer_prop->actualcount,
         buffer_prop->buffer_size, buffer_prop->alignment,
         buffer_prop->buf_poolid, buffer_prop->meta_buffer_size);
+#endif
     ioctl_msg.in = buffer_prop;
     ioctl_msg.out = NULL;
     if (ioctl (drv_ctx.video_driver_fd, VDEC_IOCTL_SET_BUFFER_REQ,
@@ -8736,12 +8744,14 @@ void omx_vdec::handle_extradata(OMX_BUFFERHEADERTYPE *p_buf_hdr)
 
   if (drv_ctx.extradata && (p_buf_hdr->nFlags & OMX_BUFFERFLAG_EXTRADATA))
   {
+#ifdef VDEC_IOCTL_GET_ENABLE_SEC_METADATA
     if (output_respbuf->metadata_offset != p_buf_hdr->nFilledLen)
     {
       DEBUG_PRINT_HIGH("WARN: metadata_offset(%d) != nAllocLen(%d)",
          output_respbuf->metadata_offset, p_buf_hdr->nFilledLen);
       p_extra = NULL;
     }
+#endif
     // Process driver extradata
     while(p_extra && p_extra->eType != VDEC_EXTRADATA_NONE)
     {

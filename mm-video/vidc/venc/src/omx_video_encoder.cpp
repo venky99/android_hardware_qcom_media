@@ -1702,6 +1702,7 @@ int omx_venc::async_message_process (void *context, void* message)
         omxhdr->nOffset = m_sVenc_msg->buf.offset;
         omxhdr->nTimeStamp = m_sVenc_msg->buf.timestamp;
         omxhdr->nFlags = m_sVenc_msg->buf.flags;
+#ifdef VDEC_IOCTL_GET_ENABLE_SEC_METADATA
         omx->extradata_len[idx] = m_sVenc_msg->buf.metadata_len;
         omx->extradata_offset[idx] = m_sVenc_msg->buf.metadata_offset;
         DEBUG_PRINT_LOW("[RespBufDone]: pBuffer = 0x%x, nFilledLen = %d, "\
@@ -1710,6 +1711,7 @@ int omx_venc::async_message_process (void *context, void* message)
             omxhdr->pBuffer, omxhdr->nFilledLen, omxhdr->nAllocLen,
             omxhdr->nTimeStamp, omxhdr->nFlags, omxhdr->nOffset,
             idx, omx->extradata_offset[idx], omx->extradata_len[idx]);
+#endif
 
         /*Use buffer case*/
         if(omx->output_use_buffer && !omx->m_use_output_pmem)
